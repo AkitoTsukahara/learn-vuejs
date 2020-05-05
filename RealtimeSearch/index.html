@@ -7,17 +7,22 @@
 <body>
 <div id="app">
     <p>
-        <input type="text" v-model:value="km">km
+        <input type="text" v-model="keyword">
     </p>
     <p>
-        <input type="text" v-model:value="m">m
+        {{ message }}
     </p>
-    <p>
-        <input type="text" v-model:value="mm">mm
-    </p>
+    <ul>
+        <li v-for="item in items">
+            <a :href="item.url" target="_blank">{{ item.title }}</a>
+            likes:{{ item.likes_count}}
+        </li>
+    </ul>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
 <script src="js/main.js"></script>
 
 </body>

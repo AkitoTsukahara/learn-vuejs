@@ -1,25 +1,56 @@
 new Vue({
     el: '#app',
     data: {
-        km: 0,
-        m: 0,
-        mm: 0
+        items: null,
+        keyword: '',
+        message: ''
+    },
+    mounted: function(){
+        axios.get('https://qiita.com/api/v2/items')
+            .then(function(response){
+                this.bpi = response.data.bpi
+            }.bind(this))
+            .catch(function (error) {
+                this.hasError = true
+            }.bind(this))
+            .finally(function (){
+                this.loading = false
+            }.bind(this))
     },
     watch: {
-        km: function(value){
-            this.km = value
-            this.m = value*1000
-            this.mm = value*1000000
-        },
-        m: function(value){
-            this.km = value/1000
-            this.m = value
-            this.mm = value*1000
-        },
-        mm: function(value){
-            this.km = value/1000000
-            this.m = value/1000
-            this.mm = value
+        keyword: function(newKeyword, oldKeyword){
+            //console.log(newKeyword)
+            this.message = 'Waiting for you ti stop typing...'
+            this.debouncedGetAnswer()
+        }
+    },
+    created: function(){
+        // this.keyword = 'JavaScript'
+        // this.getAnswer(this.keyword)
+        this.debouncedGetAnswer = _.debounce(this.getAnswer,1000)
+    },
+    methods: {
+        getAnswer: function(){
+            if(this.keyword ===""){
+                this.items = null
+                this.message = ''
+                return
+            }
+
+            this.message = 'Loading ...'
+            var vm = this
+            var params = { page: 1, per_page: 20, query: this.keyword }
+            axios.get('https://qiita.com/api/v2/items', {params})
+                .then(function(response){
+                    vm.items = response.data
+
+                })
+                .catch(function (error) {
+                    vm.message = 'Error:'+error
+                })
+                .finally(function(){
+                    vm.message = ''
+                })
         }
     }
 })
