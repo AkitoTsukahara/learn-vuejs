@@ -1,25 +1,16 @@
 new Vue({
     el: '#app',
     data: {
-         bpi: null,
-        hasError: false,
-        loading: true
+        basePrice: 100
     },
-    mounted: function(){
-        axios.get('https://api.coindesk.com/v1/bpi/currentprice.json')
-            .then(function(response){
-                this.bpi = response.data.bpi
-            }.bind(this))
-            .catch(function (error) {
-                this.hasError = true
-            }.bind(this))
-            .finally(function (){
-                this.loading = false
-            }.bind(this))
-    },
-    filters: {
-        currencyDecimal(value){
-            return value.toFixed(2)
+    computed:{
+        taxIncludedPrice: {
+            get: function() {
+                return parseInt(this.basePrice * 1.1)
+            },
+            set: function(taxIncludedPrice){
+                this.basePrice = Math.ceil(taxIncludedPrice / 1.1)
+            }
         }
     }
 })
