@@ -1,40 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Nested routes - Vue Router</title>
 </head>
 <body>
 <div id="app">
-    <router-link to="/top">Go To Top</router-link>
-    <router-link to="/users/123">Go To User</router-link>
-    <router-view>
-
-    </router-view>
+    <router-link to="/">Home</router-link>
+    <router-link to="/users/123">User</router-link>
+    <router-link to="/users/123/profile">Profile</router-link>
+    <router-link to="/users/123/posts">Posts</router-link>
+    <router-view></router-view>
 </div>
-<script src="https://unpkg.com/vue@2.6.10"></script>
-<script src="https://unpkg.com/vue-router@3.0.6"></script>
-<!--<script src="js/main.js"></script>-->
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.6/dist/vue-router.min.js"></script>
 <script>
-    const Top = { template: '<div>TOP</div>' }
-    const User = { template: '<div>USER {{ $route.params.userId}}</div>' }
+    const User = {
+        template: `
+        <div class="user">
+          <h2>User {{ $route.params.userId}}</h2>
+          <router-view></router-view>
+        </div>
+      `
+    }
+
+    const Profile = {
+        template: `
+        <div class="profile">
+          <h2>Profile {{ $route.params.userId }}</h2>
+        </div>
+      `
+    }
+
+    const Posts = {
+        template: `
+        <div class="posts">
+          <h2>Posts {{ $route.params.userId }}</h2>
+        </div>
+      `
+    }
 
     const router = new VueRouter({
         routes: [
             {
-                path: '/top',
-                component: Top
-            },
-            {
-                path: '/users/:userId',
-                component: User
+                path: '/users/:userId', component: User,
+                children: [
+                    {
+                        path: 'profile',
+                        component: Profile
+                    },
+                    {
+                        path: 'posts',
+                        component: Posts
+                    }
+
+                ]
             }
+
         ]
     })
-    const app = new Vue({
-        router: router
-        //router
+
+    var app = new Vue({
+        router
     }).$mount('#app')
 </script>
+
+<style>
+    body {
+        color: white;
+        background: #fcebb6;
+    }
+
+    .user {
+        background: #5e412f;
+        padding: 5px;
+    }
+
+    .profile {
+        background: #78c0a8;
+        padding: 5px;
+    }
+
+    .posts {
+        background: #f07818;
+        padding: 5px;
+    }
+
+</style>
 </body>
 </html>
